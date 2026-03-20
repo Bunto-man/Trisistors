@@ -5,33 +5,32 @@ use std::{
 };
 
 fn main(){
-let active = true;
-tutorial();
+    let active = true;
+    tutorial();
 
-while active{
-let mut color_string=String::new(); 
-let color_vector:Vec<&str>;
+    while active{
+        let mut color_string=String::new(); 
+        let color_vector:Vec<&str>;
 
-second_try();
+        second_try();
 
-//input
-io::stdin()
-        .read_line(&mut color_string)
-        .expect("Failed to read line"); 
+        //input
+        io::stdin()
+            .read_line(&mut color_string)
+            .expect("Failed to read line"); 
 
 
-color_vector = make_vector(&color_string); 
+        color_vector = make_vector(&color_string); 
 
-let size =color_vector.len();//get the length for the match
-match size {
-    
-4 => four_band_resistor(color_vector),
-5 => five_band_resistor(color_vector),
-6 => six_band_resistor(color_vector),
-_ => println!("resistor bands are always 4-6. please try again."),
-}
-continue;
-}//while active
+        let size =color_vector.len();//get the length for the match
+        match size {
+            4 => four_band_resistor(color_vector),
+            5 => five_band_resistor(color_vector),
+            6 => six_band_resistor(color_vector),
+            _ => println!("resistor bands are always 4-6. please try again."),
+        }
+        continue;
+    }//while active
 }
 
 ///Second message.
@@ -45,16 +44,15 @@ fn second_try(){
 /// plays the  welcome message, prompting users to type colors.
 /// Only plays one time.
 fn tutorial() {
-
-println!("Welcome to Trisistors. \n
-This program handles all normal resistors with 4 to 6 bands\n
-INPUT COLORS LIKE EXAMPLE: g b r G \n== green blue red Gold\n");
+    println!("Welcome to Trisistors. \n
+    This program handles all normal resistors with 4 to 6 bands\n
+    INPUT COLORS LIKE EXAMPLE: g b r G \n== green blue red Gold\n");
 }
 
 ///Matches the color to its value
 ///  * `color` - The color code slice being evaluated.
 fn number_match(color: &str ) -> &str{
-match color{
+    match color{
     
         "BL" => "0",
         "B" => "1",
@@ -110,10 +108,8 @@ fn multiple_match(color: &str) -> &str{
 ///Turn the color slice to its tolerance value
 fn tolerance_match(color: &str) ->&str{
     match color{
-        
         "B" => "1",
         "r" => "2",
-        
         "g" => "0.5",
         "b" => "0.25",
         "v" => "0.1",
@@ -136,7 +132,6 @@ fn temp_match(color:&str) ->&str{
         "b" => "10",
         "v" => "5",
         "GR" => "1",
-
         _ => "error!",
     }
 
@@ -145,121 +140,120 @@ fn temp_match(color:&str) ->&str{
 ///The Four band Resistor Function
 fn four_band_resistor(mut color_vector: Vec<&str>){
 
-let mut reversi = String::new();
-let mut active = true;
+    let mut reversi = String::new();
+    let mut active = true;
 
-while active{
+    while active{
 
-let mut value_vector : Vec<&str>=Vec::new();
-let mut i = 0;
-reversi.clear();
+        let mut value_vector : Vec<&str>=Vec::new();
+        let mut i = 0;
+        reversi.clear();
 
-while i < 2 {//handles digit 1 and 2
+        while i < 2 {//handles digit 1 and 2
 
-let result = number_match(color_vector[i]);
-value_vector.push(result);
+            let result = number_match(color_vector[i]);
+            value_vector.push(result);
 
-i+=1;
-}
+            i+=1;
+        }
 
-value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
+        value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
 
-value_vector.push(tolerance_match(color_vector[i+1]));
+        value_vector.push(tolerance_match(color_vector[i+1]));
 
-println!("\nResistor Value: {}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3]);
-println!("Reverse colors to fix errors? \n Y/N?");
+        println!("\nResistor Value: {}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3]);
+        println!("Reverse colors to fix errors? \n Y/N?");
 
-io::stdin()
-        .read_line(&mut reversi)
-        .expect("Failed to read line");
-if reversi.trim().eq_ignore_ascii_case("Y"){
-    color_vector = flip_vector(color_vector);
-    
-}else{
-    active = false;
-}
-}
+        io::stdin()
+                .read_line(&mut reversi)
+                .expect("Failed to read line");
+
+        if reversi.trim().eq_ignore_ascii_case("Y"){
+            color_vector = flip_vector(color_vector);
+            
+        }else{
+            active = false;
+        }
+    }
 }
 
 ///The Five band Resistor Function
 fn five_band_resistor(mut color_vector: Vec<&str>){
 
-let mut reversi = String::new();
-let mut active = true;
+    let mut reversi = String::new();
+    let mut active = true;
 
-while active{
+    while active{
 
-let mut value_vector : Vec<&str>=Vec::new();
-let mut i = 0;
-reversi.clear();
+        let mut value_vector : Vec<&str>=Vec::new();
+        let mut i = 0;
+        reversi.clear();
 
-while i < 3 {//handles digit 1 and 2
+        while i < 3 {//handles digit 1 and 2
 
-let result = number_match(color_vector[i]);
-value_vector.push(result);
+            let result = number_match(color_vector[i]);
+            value_vector.push(result);
 
-i+=1;
-}
+            i+=1;
+        }
 
-value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
+        value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
 
-value_vector.push(tolerance_match(color_vector[i+1]));
+        value_vector.push(tolerance_match(color_vector[i+1]));
 
 
-println!("\nResistor Value: {}{}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4]);
-println!("Reverse colors to fix errors? \n Y/N?");
+        println!("\nResistor Value: {}{}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4]);
+        println!("Reverse colors to fix errors? \n Y/N?");
 
-io::stdin()
-        .read_line(&mut reversi)
-        .expect("Failed to read line");
-if reversi.trim().eq_ignore_ascii_case("Y"){
-    color_vector = flip_vector(color_vector);
-    
-}else{
-    active = false;
-}
-}
+        io::stdin()
+                .read_line(&mut reversi)
+                .expect("Failed to read line");
+        if reversi.trim().eq_ignore_ascii_case("Y"){
+            color_vector = flip_vector(color_vector);
+            
+        }else{
+            active = false;
+        }
+    }
 }
 
 ///The Six band Resistor Function
 fn six_band_resistor(mut color_vector: Vec<&str>){
 
-let mut reversi = String::new();
-let mut active = true;
+    let mut reversi = String::new();
+    let mut active = true;
 
-while active{
+    while active{
 
-let mut value_vector : Vec<&str>=Vec::new();
-let mut i = 0;
-reversi.clear();
+        let mut value_vector : Vec<&str>=Vec::new();
+        let mut i = 0;
+        reversi.clear();
 
-while i < 3 {//handles digit 1 and 2
+        while i < 3 {//handles digit 1 and 2
 
-let result = number_match(color_vector[i]);
-value_vector.push(result);
+            let result = number_match(color_vector[i]);
+            value_vector.push(result);
 
-i+=1;
-}
+            i+=1;
+        }
 
-value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
+        value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
 
-value_vector.push(tolerance_match(color_vector[i+1]));
+        value_vector.push(tolerance_match(color_vector[i+1]));
 
-value_vector.push(temp_match(color_vector[i+2]));
+        value_vector.push(temp_match(color_vector[i+2]));
 
+        println!("\nResistor Value: {}{}{}{} +/- {}% , {} ppm/K",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4],value_vector[5]);
+        println!("Reverse colors to fix errors? Y/N?");
 
-
-println!("\nResistor Value: {}{}{}{} +/- {}% , {} ppm/K",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4],value_vector[5]);
-println!("Reverse colors to fix errors? Y/N?");
-
-io::stdin()
-        .read_line(&mut reversi)
-        .expect("Failed to read line");
-if reversi.trim().eq_ignore_ascii_case("Y"){
-    color_vector = flip_vector(color_vector);
-    
-}else{
-    active = false;
-}
-}
+        io::stdin()
+                .read_line(&mut reversi)
+                .expect("Failed to read line");
+        if reversi.trim().eq_ignore_ascii_case("Y"){
+            color_vector = flip_vector(color_vector);
+            
+        }else{
+            active = false;
+        }
+    }
 }
