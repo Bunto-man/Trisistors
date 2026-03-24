@@ -1,5 +1,4 @@
 //Made by me to stick it to a friend
-
 use std::{
     io,//array
 };
@@ -19,16 +18,15 @@ fn main(){
             .read_line(&mut color_string)
             .expect("Failed to read line"); 
 
-
         color_vector = make_vector(&color_string); 
 
         let size =color_vector.len();//get the length for the match
         match size {
-            4 => four_band_resistor(color_vector),
-            5 => five_band_resistor(color_vector),
-            6 => six_band_resistor(color_vector),
-            _ => println!("resistor bands are always 4-6. please try again."),
+
+            4..7 => resistor_math(color_vector,size),
+            _=>println!("\nResistors can only be 4 to 6 colors long. Please try again.\n")       
         }
+        
         continue;
     }//while active
 }
@@ -46,7 +44,7 @@ fn second_try(){
 fn tutorial() {
     println!("Welcome to Trisistors. \n
     This program handles all normal resistors with 4 to 6 bands\n
-    INPUT COLORS LIKE EXAMPLE: g b r G \n== green blue red Gold\n");
+    INPUT COLORS LIKE EXAMPLE: g b r G == green blue red Gold\n");
 }
 
 ///Matches the color to its value
@@ -137,18 +135,21 @@ fn temp_match(color:&str) ->&str{
 
 }
 
-///The Four band Resistor Function
-fn four_band_resistor(mut color_vector: Vec<&str>){
-
+///calculates and prints the value of the resistor.
+/// 
+/// * `color_vector` - The vector of the color bands on the resistor.
+/// 
+/// * `bands` - The total number of color bands on the resistor. Thought of as size, derived from color_vector.
+fn resistor_math(mut color_vector: Vec<&str>,bands:usize){
     let mut reversi = String::new();
     let mut active = true;
 
     while active{
-
         let mut value_vector : Vec<&str>=Vec::new();
         let mut i = 0;
         reversi.clear();
 
+            //let this happen regardless, always has at least 2 number bands
         while i < 2 {//handles digit 1 and 2
 
             let result = number_match(color_vector[i]);
@@ -156,12 +157,39 @@ fn four_band_resistor(mut color_vector: Vec<&str>){
 
             i+=1;
         }
+        
+        //this is what coding is all about. flexibility and ultimate performance
+    match bands {
+        4 => {
+            value_vector.push(multiple_match(color_vector[i]));
 
-        value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
+            value_vector.push(tolerance_match(color_vector[i+1]));
 
-        value_vector.push(tolerance_match(color_vector[i+1]));
+            println!("\nResistor Value: {}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3]);
+        }
+        5 =>{
+            value_vector.push(number_match(color_vector[i]));
 
-        println!("\nResistor Value: {}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3]);
+            value_vector.push(multiple_match(color_vector[i+1])); 
+
+            value_vector.push(tolerance_match(color_vector[i+2]));
+
+            println!("\nResistor Value: {}{}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4]);
+        }
+        6 =>{
+            value_vector.push(number_match(color_vector[i]));
+
+            value_vector.push(multiple_match(color_vector[i+1])); 
+
+            value_vector.push(tolerance_match(color_vector[i+2]));
+
+            value_vector.push(temp_match(color_vector[i+2]));
+
+            println!("\nResistor Value: {}{}{}{} +/- {}% , {} ppm/K",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4],value_vector[5]);
+        }
+        _ => println!("something went very very wrong."),
+    }
+    //only one reversi function needed.
         println!("Reverse colors to fix errors? \n Y/N?");
 
         io::stdin()
@@ -174,86 +202,6 @@ fn four_band_resistor(mut color_vector: Vec<&str>){
         }else{
             active = false;
         }
-    }
 }
-
-///The Five band Resistor Function
-fn five_band_resistor(mut color_vector: Vec<&str>){
-
-    let mut reversi = String::new();
-    let mut active = true;
-
-    while active{
-
-        let mut value_vector : Vec<&str>=Vec::new();
-        let mut i = 0;
-        reversi.clear();
-
-        while i < 3 {//handles digit 1 and 2
-
-            let result = number_match(color_vector[i]);
-            value_vector.push(result);
-
-            i+=1;
-        }
-
-        value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
-
-        value_vector.push(tolerance_match(color_vector[i+1]));
-
-
-        println!("\nResistor Value: {}{}{}{} +/- {}%",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4]);
-        println!("Reverse colors to fix errors? \n Y/N?");
-
-        io::stdin()
-                .read_line(&mut reversi)
-                .expect("Failed to read line");
-        if reversi.trim().eq_ignore_ascii_case("Y"){
-            color_vector = flip_vector(color_vector);
-            
-        }else{
-            active = false;
-        }
-    }
 }
-
-///The Six band Resistor Function
-fn six_band_resistor(mut color_vector: Vec<&str>){
-
-    let mut reversi = String::new();
-    let mut active = true;
-
-    while active{
-
-        let mut value_vector : Vec<&str>=Vec::new();
-        let mut i = 0;
-        reversi.clear();
-
-        while i < 3 {//handles digit 1 and 2
-
-            let result = number_match(color_vector[i]);
-            value_vector.push(result);
-
-            i+=1;
-        }
-
-        value_vector.push(multiple_match(color_vector[i])); //save the value into the vector
-
-        value_vector.push(tolerance_match(color_vector[i+1]));
-
-        value_vector.push(temp_match(color_vector[i+2]));
-
-        println!("\nResistor Value: {}{}{}{} +/- {}% , {} ppm/K",value_vector[0],value_vector[1],value_vector[2],value_vector[3],value_vector[4],value_vector[5]);
-        println!("Reverse colors to fix errors? Y/N?");
-
-        io::stdin()
-                .read_line(&mut reversi)
-                .expect("Failed to read line");
-        if reversi.trim().eq_ignore_ascii_case("Y"){
-            color_vector = flip_vector(color_vector);
-            
-        }else{
-            active = false;
-        }
-    }
-}
+//saved 56 lines of code.
